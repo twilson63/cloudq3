@@ -1,0 +1,23 @@
+{
+  "name": "cloudq3",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": "",
+  "author": "Tom",
+  "license": "MIT",
+  "dependencies": {
+    "thug": "~0.4.3",
+    "thug-redis": "0.0.3",
+    "restify": "~2.3.4"
+  },
+  "devDependencies": {
+    "request": "~2.16.4",
+    "mocha": "~1.8.2",
+    "expect.js": "~0.2.0"
+  }
+}
