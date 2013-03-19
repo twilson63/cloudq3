@@ -1,8 +1,19 @@
 var expect = require('expect.js');
 var request = require('request');
-var server = require('../server');
+var server = require('../server')({
+  namespace: 'cloudq',
+  expire: (60 * 60) * 72,
+  auth: {
+    username: 'admin',
+    password: 'admin'
+  },
+  port: 3000
+});
+
 var redis = require('redis');
 var client = redis.createClient();
+
+var req = request.defaults({json: true, auth: {user: 'admin', pass: 'admin'}});
 
 describe('Cloudq API', function() {
   describe('Add to Queue', function() {
@@ -11,7 +22,8 @@ describe('Cloudq API', function() {
       client.del('queues:foo', done);
     });
     it('should add to foo queue sucessfully', function(done) {
-      request.post('http://localhost:3000/foo',{ json: { 
+      req.post('http://localhost:3000/foo',{ 
+        json: { 
         job: { klass: 'FooClass', args: ['Baz', 'Bar'] } }},
         function(e,r,job) {
           expect(r.statusCode).to.be(200);
@@ -22,7 +34,7 @@ describe('Cloudq API', function() {
       );
     });
     after(function(done) {
-      request.del('http://localhost:3000/' + jobId, { json: true},
+      req.del('http://localhost:3000/' + jobId, 
         function(e,r,b) {
           expect(r.statusCode).to.be(200);
           done();
@@ -35,7 +47,7 @@ describe('Cloudq API', function() {
       client.del('queues:foo', done);
     });
     before(function(done) {
-      request.post('http://localhost:3000/foo',{ json: { 
+      req.post('http://localhost:3000/foo',{ json: { 
         job: { klass: 'FooClass', args: ['Baz', 'Bar'] } }},
         function(e,r,job) {
           expect(r.statusCode).to.be(200);
@@ -46,7 +58,7 @@ describe('Cloudq API', function() {
       );
     });
     it('should be successful', function(done) {
-      request('http://localhost:3000/foo',{ json: { 
+      req('http://localhost:3000/foo',{ json: { 
         job: { klass: 'FooClass', args: ['Baz', 'Bar'] } }},
         function(e,r,job) {
           expect(r.statusCode).to.be(200);
@@ -55,7 +67,7 @@ describe('Cloudq API', function() {
       });
     });
     after(function(done) {
-      request.del('http://localhost:3000/' + jobId, { json: true},
+      req.del('http://localhost:3000/' + jobId, { json: true},
         function(e,r,b) {
           expect(r.statusCode).to.be(200);
           done();

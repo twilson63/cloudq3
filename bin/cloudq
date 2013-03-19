@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+var commander = require('commander');
+var fs = require('fs');
+var package = require('../package.json');
+var init = false;
+
+commander
+  .version(package.version)
+  .option('-C, --config <path>', 'set config path [./config.js]')
+  .option('-P, --port <port>', 'set port to listen on')
+  ;
+
+commander
+  .command('init')
+  .description('create config file')
+  .action(function() {
+    init = true;
+  });
+
+commander.parse(process.argv);
+
+if (init) {
+  var config = { expire: (60 * 60) * 72, auth: {}};
+  commander.prompt('namespace: ', namespace);
+  function namespace(namespace) {
+    config.namespace = namespace;
+    commander.prompt('username: ', username);
+  };
+  function username(username) {
+    config.auth.username = username;
+    commander.password('password: ', password);
+  };
+  function password(password) {
+    config.auth.password = password;
+    done();
+  };
+  function done() {
+    fs.writeFileSync('./config.json', JSON.stringify(config));
+  };
+} else {
+  var config;
+  if (commander.config) {
+    config = JSON.parse(fs.readFileSync(commander.config));
+  } else {
+    config = require(__dirname + '/../config');
+  }
+  if (commander.port) {
+    config.port = commander.port;
+  } else {
+    config.port = 3000;
+  }
+  require('../server')(config);
+}
