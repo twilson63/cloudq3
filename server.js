@@ -22,15 +22,17 @@ var restify = require('restify');
 var Thug = require('thug');
 var redisThug = require('thug-redis');
 var redis = require('redis');
+var _ = require('underscore');
 
 // start of module, take config argument
-module.exports = function(config) {
+var app = module.exports = function(config) {
   // if no config create a config object
-  if (!config) { config = { namespace: 'cloudq3'}; }
+  if (!config) { config = { namespace: 'cloudq3', expire: (60 * 60) * 48, port: 3000 }; }
   // if no redis conn info, create empty obj
   if (!config.redis) { config.redis = {}; }
   // copy namespace to redis object for thug-redis
   config.redis.namespace = config.namespace;
+  if (!config.expire) { throw new Error('expire setting is required!'); }
   // create redis client
   //var client = redis.createClient(config.redis);
   var client = redis.createClient();
@@ -63,7 +65,10 @@ module.exports = function(config) {
         client.lpop('queues:' + queue, function(err, id) {
           if (err) { return cb(err); }
           if (!id) { return cb(null); }
-          self.get(id, function(job) { cb(null, job); });
+          self.get(id, function(job) {
+            if (!job) { return cb({ error: 'Not Found'}); } 
+            cb(null, job); 
+          });
         });
       }
     }
@@ -90,7 +95,7 @@ module.exports = function(config) {
       }
   });
 
-  server.listen(config.port, function() {
+  server.listen(config.port || 3000, function() {
     console.log('~ Cloudq3 ~');
     console.log('Listening on %s', config.port);
   });
@@ -98,8 +103,27 @@ module.exports = function(config) {
   server.get('/', function(req, res, next) {
     // get queues and counts, and provide back
     // in json or plaintext, based on the req.content-type
-    res.send('~ Cloudq3 ~');
-    return next();
+    res.write('~ Cloudq3 ~ \n');
+    res.write('=============\n');
+    res.write('=  Queues   =\n');
+    res.write('=============\n');
+    function done(data) {
+      res.end(JSON.stringify(data));
+      return next();
+    }
+    client.keys('queues:*', function(err, list) {
+      var queues = []; 
+      if (err) { return res.send(404); }
+      if (list.length === 0) { return res.end(); }
+      _(list).each(function(item, index) { 
+        client.llen(item, function(err, count) {
+          queues.push({ name: item.replace('queues:',''), pending: count });
+          if (list.length === index + 1) {
+            done(queues);
+          }
+        });
+      });
+    });
   });
 
   // QUEUE Job
@@ -114,7 +138,7 @@ module.exports = function(config) {
   // Grab Job
   server.get('/:queue', function(req, res, next) {
     Job.grab(req.params.queue, function(err, job) {
-      if (err) { res.send(500, err); }
+      if (err) { return res.send(500, err); }
       res.send(job);
       return next();
     });
@@ -127,4 +151,8 @@ module.exports = function(config) {
       return next();
     });
   });
+};
+
+if (!module.parent) {
+  app({ port: 3000, namespace: 'cloudq3', expire: (60 * 60) });
 }
