@@ -39,19 +39,13 @@ response statusCode 200
 
 ## Requirements
 
-* Redis
-* NodeJs
+* Redis (http://redis.io)
+* NodeJs (http://nodejs.org)
 
 ## Install
 
 ``` sh
 npm install cloudq -g
-```
-
-## Run Verbose Mode
-
-``` sh
-cloudq --verbose --config ./config.js
 ```
 
 ## Run Quiet Mode
@@ -64,6 +58,12 @@ cloudq --config ./config.js
 
 ``` sh
 cloudq init
+```
+
+## Run Debug Mode
+
+``` sh
+cloudq --debug --config ./config.json
 ```
 
 ## Config File Spec
