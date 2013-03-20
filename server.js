@@ -129,7 +129,6 @@ var app = module.exports = function(config) {
 
   // QUEUE Job
   server.post('/:queue', function(req, res, next) {
-    console.log(req.params);
     Job.post(req.params, function(err, job) {
       if (err) { return res.send(500, err); }
       res.send(job);
