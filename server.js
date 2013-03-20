@@ -129,6 +129,7 @@ var app = module.exports = function(config) {
 
   // QUEUE Job
   server.post('/:queue', function(req, res, next) {
+    console.log(req.params);
     Job.post(req.params, function(err, job) {
       if (err) { return res.send(500, err); }
       res.send(job);
@@ -140,7 +141,7 @@ var app = module.exports = function(config) {
   server.get('/:queue', function(req, res, next) {
     Job.grab(req.params.queue, function(err, job) {
       if (err) { return res.send(500, err); }
-      if (config.legacy) {
+      if (config.legacy && job) {
         job.job.id = job.id;
         res.send(job.job);
       } else {
