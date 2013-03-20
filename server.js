@@ -87,6 +87,7 @@ var app = module.exports = function(config) {
   server.use(restify.bodyParser());
   server.use(function(req,res,next) {
     if (!config.auth) { return next(); }
+    if (req.url === '/') { return next(); }
     if (req.username === config.auth.username && 
       req.authorization.basic.password === config.auth.password) {
         return next();
