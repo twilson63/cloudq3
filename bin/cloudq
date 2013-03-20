@@ -9,6 +9,7 @@ commander
   .version(package.version)
   .option('-C, --config <path>', 'set config path [./config.js]')
   .option('-P, --port <port>', 'set port to listen on')
+  .option('-L, --legacy', 'turn on legacy mode')
   ;
 
 commander
@@ -49,6 +50,9 @@ if (init) {
     config.port = commander.port;
   } else {
     config.port = 3000;
+  }
+  if (commander.legacy) {
+    config.legacy = true;
   }
   require('../server')(config);
 }

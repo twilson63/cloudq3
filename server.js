@@ -139,7 +139,12 @@ var app = module.exports = function(config) {
   server.get('/:queue', function(req, res, next) {
     Job.grab(req.params.queue, function(err, job) {
       if (err) { return res.send(500, err); }
-      res.send(job);
+      if (config.legacy) {
+        job.job.id = job.id;
+        res.send(job.job);
+      } else {
+        res.send(job);
+      }
       return next();
     });
   });
