@@ -83,6 +83,15 @@ cloudq --debug --config ./config.json
 
 MIT
 
+## Design Goals
+
+* API should be simple
+* Any JSON message should be allowed
+* Jobs will expire based on expire config setting
+* Prioritization will always be first in first out for every queue
+* queue names cannot have spaces
+* stats page should be simple
+
 ## ROADMAP
 
 ## THANKS
