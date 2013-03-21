@@ -23,6 +23,7 @@ var Thug = require('thug');
 var redisThug = require('thug-redis');
 var redis = require('redis');
 var _ = require('underscore');
+var bunyan = require('bunyan');
 
 // start of module, take config argument
 var app = module.exports = function(config) {
@@ -141,6 +142,7 @@ var app = module.exports = function(config) {
     Job.post(req.params, function(err, job) {
       if (err) { return res.send(500, err); }
       res.send(job);
+      if (config.debug) { console.log(job); }
       return next();
     });
   });
@@ -151,7 +153,6 @@ var app = module.exports = function(config) {
       if (err) { return res.send(500, err); }
       if (config.legacy && job) {
         job.job.id = job.id;
-        console.log(job);
         res.send(job.job);
       } else if (job) {
         res.send(job);
@@ -160,6 +161,7 @@ var app = module.exports = function(config) {
       } else {
         res.send(200);
       }
+      if (config.debug) { console.log(job); }
       return next();
     });
   });
@@ -167,7 +169,12 @@ var app = module.exports = function(config) {
   // DELETE Job
   server.del('/:id', function(req, res, next) {
     Job.del(req.params.id, function(job) {
-      res.send(200);
+      if (config.legacy) {
+        res.send({ success: true});
+      } else {
+        res.send(200);
+      }
+      if (config.debug) { console.log(job); }
       return next();
     });
   });
