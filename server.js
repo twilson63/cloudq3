@@ -152,7 +152,7 @@ var app = module.exports = function(config) {
     Job.grab(req.params.queue, function(err, job) {
       if (err) { return res.send(500, err); }
       if (config.legacy && job) {
-        job.job.id = job.id;
+        job.job.id = job.id.toString();
         res.send(job.job);
       } else if (job) {
         res.send(job);
