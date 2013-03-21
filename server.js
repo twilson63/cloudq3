@@ -95,6 +95,15 @@ var app = module.exports = function(config) {
         res.send(401);
       }
   });
+  // Add Logging
+  if (config.debug) {
+    server.on('after', restify.auditLogger({
+      log: bunyan.createLogger({
+        name: 'audit',
+        stream: process.stdout
+      })
+    }));
+  }
 
   server.listen(config.port || 3000, function() {
     console.log('~ Cloudq3 ~');
@@ -142,6 +151,7 @@ var app = module.exports = function(config) {
       if (err) { return res.send(500, err); }
       if (config.legacy && job) {
         job.job.id = job.id;
+        console.log(job);
         res.send(job.job);
       } else {
         res.send(job);

@@ -94,5 +94,8 @@ MIT
 
 ## ROADMAP
 
+* Add Debug Flag 
+* Add Email Support
+
 ## THANKS
 

@@ -10,6 +10,7 @@ commander
   .option('-C, --config <path>', 'set config path [./config.js]')
   .option('-P, --port <port>', 'set port to listen on')
   .option('-L, --legacy', 'turn on legacy mode')
+  .option('-D, --debug', 'enable verbose logging')
   ;
 
 commander
@@ -53,6 +54,9 @@ if (init) {
   }
   if (commander.legacy) {
     config.legacy = true;
+  }
+  if (commander.debug) {
+    config.debug = true;
   }
   require('../server')(config);
 }
