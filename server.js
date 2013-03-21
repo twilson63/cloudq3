@@ -153,8 +153,12 @@ var app = module.exports = function(config) {
         job.job.id = job.id;
         console.log(job);
         res.send(job.job);
-      } else {
+      } else if (job) {
         res.send(job);
+      } else if (config.legacy) {
+        res.send({empty: true});
+      } else {
+        res.send(200);
       }
       return next();
     });
