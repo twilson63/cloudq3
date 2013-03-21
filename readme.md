@@ -45,25 +45,30 @@ response statusCode 200
 ## Install
 
 ``` sh
-npm install cloudq -g
+npm install cloudq3 -g
 ```
 
 ## Run Quiet Mode
 
 ``` sh
-cloudq --config ./config.js
+cloudq3 --config ./config.js
 ```
 
 ## Create Config File
 
 ``` sh
-cloudq init
+cloudq3 init
 ```
 
 ## Run Debug Mode
 
 ``` sh
-cloudq --debug --config ./config.json
+cloudq3 --debug --config ./config.json
+
+## Run Legacy Mode
+
+``` sh
+cloudq3 --legacy --config ./config.json
 ```
 
 ## Config File Spec
@@ -94,7 +99,6 @@ MIT
 
 ## ROADMAP
 
-* Add Debug Flag 
 * Add Email Support
 
 ## THANKS
