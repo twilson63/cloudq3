@@ -157,7 +157,7 @@ var app = module.exports = function(config) {
       } else if (job) {
         res.send(job);
       } else if (config.legacy) {
-        res.send({empty: true});
+        res.send({status: "empty"});
       } else {
         res.send(200);
       }
