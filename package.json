@@ -1,6 +1,6 @@
 {
   "name": "cloudq3",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "ERROR: No README.md file found!",
   "main": "server.js",
   "bin": "./bin/cloudq",

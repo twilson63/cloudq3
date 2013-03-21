@@ -178,6 +178,19 @@ var app = module.exports = function(config) {
       return next();
     });
   });
+  // DELETE /:queue/:id
+  server.del('/:queue/:id', function(req, res, next) {
+    Job.del(req.params.id, function(job) {
+      if (config.legacy) {
+        res.send({ status: "success"});
+      } else {
+        res.send(200);
+      }
+      if (config.debug) { console.log(job); }
+      return next();
+    });
+  });
+
 };
 
 if (!module.parent) {
