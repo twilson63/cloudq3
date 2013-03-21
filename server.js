@@ -170,7 +170,7 @@ var app = module.exports = function(config) {
   server.del('/:id', function(req, res, next) {
     Job.del(req.params.id, function(job) {
       if (config.legacy) {
-        res.send({ success: true});
+        res.send({ status: "success"});
       } else {
         res.send(200);
       }
