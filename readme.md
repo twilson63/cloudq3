@@ -103,3 +103,5 @@ MIT
 
 ## THANKS
 
+* Mark Gunnels (http://github.com/markgunnels)
+* Kevin Stewart (http://github.com/kdstew)
