@@ -119,6 +119,7 @@ var app = module.exports = function(config) {
     res.write('=  Queues   =\n');
     res.write('=============\n');
     function done(data) {
+      // TODO: maybe provide better formatting ~
       res.end(JSON.stringify(data));
       return next();
     }
@@ -141,9 +142,11 @@ var app = module.exports = function(config) {
   server.post('/:queue', function(req, res, next) {
     Job.post(req.params, function(err, job) {
       if (err) { return res.send(500, err); }
+      // add for legacy mode
       job.ok = true;
       res.send(job);
-      if (config.debug) { console.log(job); }
+      // debugging info - maybe easier with bunyan
+      if (config.debug && job) { console.log(job); }
       return next();
     });
   });
@@ -152,45 +155,39 @@ var app = module.exports = function(config) {
   server.get('/:queue', function(req, res, next) {
     Job.grab(req.params.queue, function(err, job) {
       if (err) { return res.send(500, err); }
-      if (config.legacy && job) {
-        job.job.id = job.id.toString();
-        res.send(job.job);
-      } else if (job) {
-        res.send(job);
-      } else if (config.legacy) {
-        res.send({status: "empty"});
+      // handle legacy
+      if (config.legacy) {
+        if(job) {
+          job.job.id = job.id.toString();
+          res.send(job.job);
+        } else {
+          res.send({status: "empty"});
+        }
       } else {
-        res.send(200);
+        res.send(job);
       }
-      if (config.debug) { console.log(job); }
+      // debugging info - maybe easier with bunyan
+      if (config.debug && job) { console.log(job); }
       return next();
     });
   });
 
+  // remove job from db
+  function deleteJob(req, res, next) {
+    Job.del(req.params.id, function(job) {
+      if (config.legacy) {
+        res.send({ status: "success"});
+      } else {
+        res.send(200);
+      }
+      if (config.debug) { console.log(job); }
+      return next();
+    });
+  }
   // DELETE Job
-  server.del('/:id', function(req, res, next) {
-    Job.del(req.params.id, function(job) {
-      if (config.legacy) {
-        res.send({ status: "success"});
-      } else {
-        res.send(200);
-      }
-      if (config.debug) { console.log(job); }
-      return next();
-    });
-  });
+  server.del('/:id', deleteJob);
   // DELETE /:queue/:id
-  server.del('/:queue/:id', function(req, res, next) {
-    Job.del(req.params.id, function(job) {
-      if (config.legacy) {
-        res.send({ status: "success"});
-      } else {
-        res.send(200);
-      }
-      if (config.debug) { console.log(job); }
-      return next();
-    });
-  });
+  server.del('/:queue/:id', deleteJob);
 
 };
 
