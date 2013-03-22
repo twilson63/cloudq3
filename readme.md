@@ -13,7 +13,7 @@ work.  For example, if the user of your web application has
 requested for an intensive process to be run, but the application
 does not need the user to wait around for the process to be performed.  Then you can submit the instructions to cloudq and
 have an army of workers waiting around to do the work then notify
-you application when the work is complete and the application can notify the user.
+your application when the work is complete and the application can notify the user.
 
 ## FAQ
 
@@ -27,7 +27,7 @@ If for some reason your worker fails to remove the message, the expire function 
 
 * How does this compare to other messages queues like amqp, sqs, etc?
 
-Cloudq is meant to be dirt simple and responsive, amqp is great if you need all of the features, sqs is great as well, but we found it to be a little slow for our needs, also we needed to control the storage location of the data.  The bottom line is that cloudq is not much different than the other solutions, it just tries to be very simple to use, install, deploy.
+Cloudq is meant to be simple and responsive, amqp is great, if you need all of the features, sqs is great as well, but we found it to be a little slow for our needs, also we needed to control the storage location of the data.  The bottom line is that cloudq is not much different than the other solutions, it just tries to be very simple to use, install, deploy.
 
 * How many messages per sec can cloudq handle?
 
