@@ -108,7 +108,7 @@ var app = module.exports = function(config) {
 
   server.listen(config.port || 3000, function() {
     console.log('~ Cloudq3 ~');
-    console.log('Listening on %s', config.port);
+    console.log('Listening on %s', config.port || 3000);
   });
 
   server.get('/', function(req, res, next) {
